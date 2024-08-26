@@ -2,14 +2,36 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 const bcrypt = require("bcrypt");
+const multer = require("multer")
+const fs = require("fs")
+const path = require("path")
 const jwt = require("jsonwebtoken")
+
 
 const JWT_SECRET = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c' //spostarla nell'env
 
+//storage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage })
+
+
+
+
+
+
 // Crea un nuovo utente
 // backend/routes/users.js
-router.post('/register', async (req, res) => {
+router.post('/register', upload.single('profileImage'), async (req, res) => {
     const { username, email, password } = req.body;
+    const file = req.file
 
     try {
         // Verifica se l'username o l'email esistono già
@@ -20,9 +42,10 @@ router.post('/register', async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
+        const filename = file.filename
         const result = await pool.query(
-            'INSERT INTO public.users (username, email, password) VALUES ($1, $2, $3) RETURNING *',
-            [username, email, hashedPassword]
+            'INSERT INTO public.users (username, email, password, profile_img) VALUES ($1, $2, $3, $4) RETURNING *',
+            [username, email, hashedPassword, filename]
         );
 
         const user = result.rows[0];
@@ -105,6 +128,26 @@ router.delete('/:id', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+
+
+router.get('/profile', async (req, res) => {
+    const { userId } = req.query;
+
+    try {
+        const result = await db.query('SELECT username, email, profile_img FROM public.users WHERE id = $1', [userId]);
+        const user = result.rows[0];
+
+        if (user) {
+            res.status(200).json(user);
+        } else {
+            res.status(404).json({ error: 'Utente non trovato' });
+        }
+    } catch (error) {
+        console.error('Errore durante il recupero del profilo:', error);
+        res.status(500).json({ error: 'Errore durante il recupero del profilo' });
+    }
 });
 
 module.exports = router;

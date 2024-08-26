@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUser, setError, login } from '../slice/authSlice'; // Assicurati di avere questo percorso corretto
 import { toast } from "react-hot-toast"
+import { useNavigate } from "react-router-dom"
 
 
 const Login = () => {
@@ -10,6 +11,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setLocalError] = useState('');
     const [success, setSuccess] = useState('');
+    const navigate = useNavigate()
     const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
@@ -25,6 +27,7 @@ const Login = () => {
             });
             const { user, token } = response.data;
             dispatch(login({user, token}))
+            navigate('/homepage')
             toast.success('Login Riuscito')
 
         } catch (error) {

@@ -3,6 +3,7 @@ const http = require("http");
 const socket = require("socket.io");
 const bodyParser = require("body-parser");
 const cors = require("cors")
+
 //manca il db
 const pool = require('./db')
 
@@ -12,8 +13,7 @@ const teamRouter = require("./routes/teams")
 const artistRouter = require("./routes/artists");
 const championshipRouter = require("./routes/championships")
 
-
-//cors options
+// storage
 
 
 

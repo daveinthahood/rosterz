@@ -4,8 +4,10 @@ import './campmodal.css'
 
 
 const CampModal = ({ isOpen, onClose }) => {
+
     const [name, setName] = useState('')
     const [championshipLink, setChampionshipLink] = useState('')
+
     const handleSubmit = async(e) => {
         e.preventDefault()
         try {
@@ -21,8 +23,10 @@ const CampModal = ({ isOpen, onClose }) => {
 
             }
             const result = await response.json()
+            console.log(result);
+            const championshipsName = result.name;
             const championshipId = result.id;
-            const link = `http://localhost:5173/join/${championshipId}`
+            const link = `http://localhost:5173/join/${championshipsName}/${championshipId}`
             setChampionshipLink(link)
             console.log(result);
             onClose()
@@ -33,7 +37,7 @@ const CampModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
     return (
         <div className="modal-overlay">
-      <div className="modal-content">
+           <div className="modal-content">
         <h2>Crea Competizione</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -44,20 +48,46 @@ const CampModal = ({ isOpen, onClose }) => {
               onChange={(e) => setName(e.target.value)}
               required
             />
+
+
+
           </div>
+
           <button type="submit">Crea</button>
           <button type="button" onClick={onClose}>Annulla</button>
         </form>
         {championshipLink && (
             <div>
-                <p> Competizione creata condividi il link</p>
+                <p> Competizione creata condividi il link </p>
                 <a href={championshipLink}> {championshipLink} </a>
             </div>
         )}
 
       </div>
     </div>
+
+
+
+
+
+
     )
 }
 
 export default CampModal
+
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/

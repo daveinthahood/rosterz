@@ -9,18 +9,32 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [success, setSuccess] = useState('');
     const [error, setError] = useState(''); // Gestione dell'errore
+    const [profileImage, setProfileImage] = useState(null);
+
     const dispatch = useDispatch();
+
+    const handleFileChange = (e) => {
+        setProfileImage(e.target.files[0]);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccess('');
         setError(''); // Resetta l'errore su submit
 
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('email', email);
+        formData.append('password', password);
+        if (profileImage) {
+            formData.append('profileImage', profileImage);
+        }
+
         try {
-            const response = await axios.post('http://localhost:3000/api/users/register', {
-                username,
-                email,
-                password,
+            const response = await axios.post('http://localhost:3000/api/users/register', formData,  {
+                headers:{
+                    'Content-Type': 'multipart/form-data',
+                }
             });
 
             if (response.status === 200) {
@@ -69,6 +83,12 @@ const Register = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                    />
+
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
                     />
                 </div>
                 <button type="submit">Registrati</button>

@@ -11,7 +11,6 @@ const Profile = () => {
 
                <div className="h-screen flex-1 p-7">
                     <UserProfile />
-
                </div>
 
             </div>
