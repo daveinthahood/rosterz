@@ -1,3 +1,6 @@
+// componente che renderizza le informazioni del campionato in base al nome e all'id dello stesso
+//
+
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 

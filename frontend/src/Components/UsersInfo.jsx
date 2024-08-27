@@ -1,4 +1,6 @@
-// frontend/src/components/Profile.jsx
+// Componente delle Info dell'utente che attualmente è loggato '
+//
+//
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ChampCard from "./ChampCard";
